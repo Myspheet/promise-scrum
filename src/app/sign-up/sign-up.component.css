@@ -1,0 +1,13 @@
+.container{
+  width: 50%;
+}
+
+.signup-header{
+ text-align: center;
+  color: blue;
+  padding: 10px;
+}
+
+div small{
+  color: red;
+}
