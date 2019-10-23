@@ -1,5 +1,6 @@
 <div class="container">
   <h2 class="signup-header">Sign Up</h2>
+  <h4 class="text-danger">{{ feedback }}</h4>
 
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
 
@@ -72,6 +73,7 @@
         </option>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">Sign Up</button>
+    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
   </form>
+  <p>Already have an account? <a routerLink="/login">Login here</a></p>
 </div>

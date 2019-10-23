@@ -1,5 +1,7 @@
+import { ScrumdataService } from './../scrumdata.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,10 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
+  feedback;
   loginForm;
+  user;
   submit = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private scrumDataService: ScrumdataService,
+              private router: Router) {
     this.loginForm = this.formBuilder.group({
       email: [null, [Validators.required, Validators.email]],
       password: [null, Validators.required],
@@ -24,12 +29,26 @@ export class LoginComponent implements OnInit {
 
   get formControls() { return this.loginForm.controls; }
 
-  onSubmit() {
+  setUserData() {
+    return this.user = Object.assign({}, this.loginForm.value);
+  }
+
+  onLoginSubmit() {
     this.submit = true;
     if ((this.submit && this.loginForm.untouched) || this.loginForm.invalid) {
       return;
     }
-    console.log('Login form has been submitted');
+    this.setUserData();
+    this.scrumDataService.login(this.user).subscribe(
+      data => {
+        console.log('Success!', data);
+        localStorage.setItem('token', data.token);
+        this.router.navigate(['/scrumboard']);
+      },
+      error => {
+        console.error('Error!', error);
+        this.feedback = 'Username or Password doesn\'t match';
+      }
+    );
   }
-
 }

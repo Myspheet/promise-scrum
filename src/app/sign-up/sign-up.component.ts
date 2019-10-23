@@ -10,7 +10,7 @@ import { ScrumdataService } from '../scrumdata.service';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent implements OnInit {
-  constructor(private formBuilder: FormBuilder, private scrumSataService: ScrumdataService) {
+  constructor(private formBuilder: FormBuilder, private scrumDataService: ScrumdataService) {
     this.signupForm = this.formBuilder.group({
       email: ['',  [Validators.required, Validators.email]],
       fullname: ['', Validators.required],
@@ -29,6 +29,7 @@ export class SignUpComponent implements OnInit {
   userTypes = [];
   scrumUser = new Scrumuser('', '', '', '', '');
   submit = false;
+  feedback = '';
 
   ngOnInit() {
   }
@@ -43,10 +44,15 @@ export class SignUpComponent implements OnInit {
       return;
     }
     this.setScrumUserData();
-    console.log(this.scrumUser);
-    this.scrumSataService.signup(this.scrumUser).subscribe(
-      data => console.log('Success!', data),
-      error => console.error('Error!', error)
+    this.scrumDataService.signup(this.scrumUser).subscribe(
+      data => {
+        console.log('Success!', data);
+        this.feedback = 'Account was created succesfully';
+      },
+      error => {
+        console.error('Error!', error);
+        this.feedback = 'Sign Up Failed';
+      }
     );
   }
 
