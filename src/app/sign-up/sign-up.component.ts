@@ -14,7 +14,6 @@ export class SignUpComponent implements OnInit {
     this.signupForm = this.formBuilder.group({
       email: ['',  [Validators.required, Validators.email]],
       fullname: ['', Validators.required],
-      projectName: ['', Validators.required],
       password: ['', [Validators.required,
         Validators.pattern('^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~`!@#$%\^&*()_+={}|\\[\\]\\\\;:"\'<,>.?/-]).{8,}$')]],
       userType: ['regular user', Validators.required],
@@ -35,7 +34,11 @@ export class SignUpComponent implements OnInit {
   }
 
   setScrumUserData() {
-    this.scrumUser = Object.assign({}, this.signupForm.value);
+    this.scrumUser.email = this.formControls.email.value;
+    this.scrumUser.fullname = this.formControls.fullname.value;
+    this.scrumUser.password = this.formControls.password.value;
+    this.scrumUser.userType = this.formControls.userType.value;
+
   }
 
   onSubmit() {
@@ -44,6 +47,7 @@ export class SignUpComponent implements OnInit {
       return;
     }
     this.setScrumUserData();
+    console.log(this.scrumUser);
     this.scrumDataService.signup(this.scrumUser).subscribe(
       data => {
         console.log('Success!', data);
