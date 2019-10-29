@@ -12,9 +12,15 @@ export class ScrumdataService {
 
   signupApiUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumusers/';
   loginApiUrl = 'https://liveapi.chatscrum.com/scrum/api-token-auth/';
+  scrumProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojects/';
+
   public httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
+
+  allProjectGoals(projectId): Observable<any>{
+    return this.http.get(this.scrumProjectUrl + projectId, this.httpOptions);
+  }
 
   signup(user: Scrumuser): Observable<any> {
     return this.http.post(this.signupApiUrl, {

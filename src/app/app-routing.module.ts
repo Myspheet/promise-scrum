@@ -10,7 +10,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 const routes: Routes = [
   {path: '', component: HomepageComponent },
   {path: 'home', component: HomepageComponent },
-  {path: 'scrumboard', component: ScrumboardComponent, canActivate: [ AuthGuard ]},
+  {path: 'scrumboard/:project_id', component: ScrumboardComponent, canActivate: [ AuthGuard ]},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignUpComponent},
 ];
