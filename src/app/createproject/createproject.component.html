@@ -44,30 +44,6 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <input
-        type="text"
-        formControlName="role"
-        class="form-control"
-        [class.is-invalid]="formControls.role.invalid && (formControls.role.touched || submit)"
-        name="role"
-        hidden
-      />
-    </div>
-
-
-    <div class="form-group">
-      <label for="slacks">Slack:</label>
-      <select formControlName="slack" class="form-control" name="slack">
-        <option
-          *ngFor="let slack of slacks; let i = index"
-          [value]="slacks[i]"
-        >
-          {{ slack }}
-        </option>
-      </select>
-    </div>
-
     <button type="submit" class="btn btn-primary btn-block">Create Project</button>
   </form>
 </div>

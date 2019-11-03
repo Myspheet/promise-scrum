@@ -18,8 +18,6 @@ export class CreateprojectComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       fullname: ['', Validators.required],
       projectName: ['', Validators.required],
-      role: ['Owner', Validators.required],
-      slack: ['false', Validators.required],
     });
 
     this.slacks = ['false', 'true'];
