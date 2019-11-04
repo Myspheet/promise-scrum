@@ -14,6 +14,7 @@ export class ScrumdataService {
   loginApiUrl = 'https://liveapi.chatscrum.com/scrum/api-token-auth/';
   scrumProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojects/';
   updateProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumgoals/';
+  updateRoleUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojectroles/';
   token;
   encode;
   public httpOptions = {
@@ -39,7 +40,8 @@ export class ScrumdataService {
     this.token = this.getUser().token;
     this.encode = JSON.parse(localStorage.getItem('AuthUser'));
     this.encode = btoa(`${this.encode.email}:${this.encode.password}`);
-    return this.http.patch(this.signupApiUrl + user.id +'/',{role: user.role}, {headers: new HttpHeaders() 
+    console.log(user.role);
+    return this.http.patch(this.updateRoleUrl + user.id +'/',{role: user.role}, {headers: new HttpHeaders() 
       .set('Authorization', `Basic ${this.encode}==`)
       });
   }
@@ -54,9 +56,7 @@ export class ScrumdataService {
   }
 
   createProject(project): Observable<any> {
-    return this.http.post(this.scrumProjectUrl, {email: project.email, name: project.fullname, projName: project.projectName,
-    scrumprojectrole_set: [{role: 'Owner', user:'', scrumgoal_set:'', scrumnote_set:'', scrumworkid_set:'', scrumlog_set:''}], 
-    scrumslack_set: [{access_token:'fkdoelaksdlf;kekpaiosd', bot_access_token:'aalskdofeisakdpf'}]}, this.httpOptions);
+    return this.http.post(this.signupApiUrl, {email: project.email, full_name: project.fullname, usertype:'Owner', projname: project.projectName}, this.httpOptions);
   }
 
   login(user): Observable<any> {
