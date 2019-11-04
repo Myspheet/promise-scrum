@@ -13,6 +13,7 @@ export class CreateprojectComponent implements OnInit {
   submit;
   project = {};
   slacks;
+  feedback = '';
   constructor(private scrrumDataService: ScrumdataService, private formBuilder: FormBuilder) {
     this.createProjectForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -41,9 +42,11 @@ export class CreateprojectComponent implements OnInit {
     this.scrrumDataService.createProject(this.project).subscribe(
       data => {
         console.log('Success', data);
+        this.feedback = "Project Created Successfully";
       },
       error => {
         console.log('error', error);
+        this.feedback = "Project Creation failed";
       }
     )
   }
