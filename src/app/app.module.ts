@@ -15,6 +15,7 @@ import { AuthGuard } from './guard/auth.guard';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateprojectComponent } from './createproject/createproject.component';
 import { ChangeroleComponent } from './changerole/changerole.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ChangeroleComponent } from './changerole/changerole.component';
     ScrumboardComponent,
     HomepageComponent,
     CreateprojectComponent,
-    ChangeroleComponent
+    ChangeroleComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

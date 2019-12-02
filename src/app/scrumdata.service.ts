@@ -2,6 +2,7 @@ import { Scrumuser } from './model/scrumuser';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,12 @@ export class ScrumdataService {
   scrumProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojects/';
   updateProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumgoals/';
   updateRoleUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojectroles/';
+  myWebSocket = webSocket({
+    url : 'wss://7e0gtxz63i.execute-api.us-east-2.amazonaws.com/Dev',
+    deserializer: ({data}) => data,
+    //serializer: msg => JSON.stringify({action: "sendmessage", data: msg})
+  });
+
   token;
   encode;
   public httpOptions = {
@@ -30,6 +37,40 @@ export class ScrumdataService {
       email: user.email, password: user.password, full_name: user.fullname,
       usertype: user.userType, projname: user.projectName,
     }, this.httpOptions);
+  }
+
+  connect(){
+    this.myWebSocket.asObservable().subscribe(
+      msg => console.log('subscribed: ' + msg), 
+      // Called whenever there is a message from the server    
+      err => console.log(err), 
+      // Called if WebSocket API signals some kind of error    
+      () => console.log('complete') 
+      // Called when connection is closed (for whatever reason)  
+    );
+  }
+
+  chatmsg;
+  myChat;
+
+  sendMessage(mesg: string) {
+    this.myWebSocket.next({action:"sendmessage", data:`${mesg}`});
+    this.myChat = this.myWebSocket.subscribe(    
+      msg => {
+        new Promise(resolve => {
+          resolve(msg);
+        }).then(msg => {
+          this.chatmsg = msg;
+          return this.chatmsg;
+        });
+       } , 
+      // Called whenever there is a message from the server    
+      err => console.log(err), 
+      // Called if WebSocket API signals some kind of error    
+      () => this.myWebSocket.subscribe() 
+      // Called when connection is closed (for whatever reason)  
+   );
+   return this.myChat;
   }
 
   loggedIn(): boolean {
@@ -61,6 +102,13 @@ export class ScrumdataService {
 
   login(user): Observable<any> {
     return this.http.post(this.loginApiUrl, { username: user.email, password: user.password, project: user.projectName}, this.httpOptions);
+  }
+
+  logout(): boolean {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('AuthUser');
+    return true;
   }
 
   getUser(): any {

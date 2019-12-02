@@ -1,6 +1,7 @@
 import { ScrumdataService } from './../scrumdata.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -16,16 +17,51 @@ export class ScrumboardComponent implements OnInit {
   taskForTheWeek = [];
   taskVerified = [];
   taskDone = [];
+  messages=[];
+  myMessages = [];
   tasks = [{'hello': 'hi'},{'hello': 'hi'},{'hello': 'hi'}];
   loggedUser;
+  submit = false;
+  chatForm;
 
-  constructor(private route: ActivatedRoute, private scrumDataService: ScrumdataService) { }
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router:Router, private scrumDataService: ScrumdataService) {
+    this.chatForm = this.formBuilder.group({
+      chat: [null, Validators.required]
+    });
+   }
 
   ngOnInit() {
     // tslint:disable-next-line: radix
     this.loggedUser = this.scrumDataService.getUser();
     this.projectId = parseInt(this.route.snapshot.paramMap.get('project_id'));
     this.getProjectGoals();
+    this.scrumDataService.myWebSocket.asObservable().subscribe(    
+      msg => {
+        new Promise(resolve => {
+          resolve(msg);
+        }).then(msg => {
+        
+          this.myMessages = [];
+          this.myMessages.push(JSON.parse(JSON.stringify(msg)));
+          this.myMessages.forEach(value => this.messages.push(JSON.parse(value)));
+        });
+       } , 
+      // Called whenever there is a message from the server    
+      err => console.log(err), 
+      // Called if WebSocket API signals some kind of error    
+      () => console.log('complete')
+      // Called when connection is closed (for whatever reason)  
+   );
+  }
+
+  send() {
+    this.submit = true;
+    if ((this.submit && this.chatForm.untouched) || this.chatForm.invalid) {
+      this.submit = false;
+      return;
+    }
+    this.scrumDataService.myWebSocket.next({action:"sendmessage", data: {user:`${this.scrumDataService.getUser().name}`, data:`${this.chatForm.controls.chat.value}`}})
+    this.chatForm.reset();
   }
 
   sortGoals( goal ) {
@@ -92,7 +128,6 @@ export class ScrumboardComponent implements OnInit {
   }
 
   filterTasks() {
-    console.log('working');
     this.participants.forEach(( participant ) => {
       participant.scrumgoal_set.forEach(element => {
        this.sortGoals(element);
@@ -105,13 +140,20 @@ export class ScrumboardComponent implements OnInit {
       data => {
         this.participants = data.data;
         this.filterTasks();
-        console.log(this.participants);
       },
       error => {
         console.log(error);
       }
 
     )
+  }
+
+  logout() {
+    if(this.scrumDataService.logout()){
+      this.router.navigate(['/login']);
+    }else{
+      console.log('error');
+    }
   }
 
 }
