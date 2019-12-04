@@ -36,7 +36,7 @@ let con = mysql.createConnection({
 con.connect();
 let mySql = `CREATE TABLE IF NOT EXISTS chat ( id INT(10) NOT NULL AUTO_INCREMENT , name VARCHAR(50) NOT NULL , email VARCHAR(50) NOT NULL , message TEXT NOT NULL , time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (id))`;
 con.query(mySql, (err, result) => {
-  if(err) throw err;
+  if(err) throw err ;
 });
 
 
