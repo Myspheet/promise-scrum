@@ -162,6 +162,7 @@ export class ScrumboardComponent implements OnInit {
 
   logout() {
     if(this.scrumDataService.logout()){
+      this.scrumDataService.myWebSocket.complete();
       this.router.navigate(['/login']);
     }else{
       console.log('error');
