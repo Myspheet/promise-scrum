@@ -21,6 +21,8 @@ export class ScrumboardComponent implements OnInit {
   myMessages = [];
   tasks = [{'hello': 'hi'},{'hello': 'hi'},{'hello': 'hi'}];
   loggedUser;
+  authUserEmail;
+  gotMessage;
   submit = false;
   chatForm;
 
@@ -28,11 +30,18 @@ export class ScrumboardComponent implements OnInit {
     this.chatForm = this.formBuilder.group({
       chat: [null, Validators.required]
     });
+    this.scrumDataService.getAllMessages().subscribe( data => {
+        this.gotMessage = data;
+        this.gotMessage.forEach( value => {
+          this.messages.push(value);
+        });
+        });
    }
 
   ngOnInit() {
     // tslint:disable-next-line: radix
     this.loggedUser = this.scrumDataService.getUser();
+    this.authUserEmail = JSON.parse(localStorage.getItem('AuthUser')).email
     this.projectId = parseInt(this.route.snapshot.paramMap.get('project_id'));
     this.getProjectGoals();
     this.scrumDataService.myWebSocket.asObservable().subscribe(    
@@ -60,7 +69,10 @@ export class ScrumboardComponent implements OnInit {
       this.submit = false;
       return;
     }
-    this.scrumDataService.myWebSocket.next({action:"sendmessage", data: {user:`${this.scrumDataService.getUser().name}`, data:`${this.chatForm.controls.chat.value}`}})
+    this.scrumDataService.sendToDb(this.scrumDataService.getUser().name, JSON.parse(localStorage.getItem('AuthUser')).email, this.chatForm.controls.chat.value ).subscribe( data => {
+      console.log(data);      
+    });
+    this.scrumDataService.myWebSocket.next({action:"sendmessage", data: {name:`${this.scrumDataService.getUser().name}`, email:`${JSON.parse(localStorage.getItem('AuthUser')).email}`, message:`${this.chatForm.controls.chat.value}`}})
     this.chatForm.reset();
   }
 

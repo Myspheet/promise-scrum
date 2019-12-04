@@ -2,13 +2,13 @@
 <div  style="max-height:50%; overflow-y:scroll; border: 2px solid black; background: white; position: absolute; bottom: 100px; right:40px; width: 40%">
 <div class="container">
 <div class="row" *ngFor="let message of messages">
-  <div class="col-sm-10 offset-2 text-right" *ngIf="message.user == loggedUser.name">
+  <div class="col-sm-10 offset-2 text-right" *ngIf="message.email == authUserEmail">
   <p style="margin-bottom:2px;">You</p>
-  <p><span style="background-color:black; color:white; padding:10px; border-radius:5px;">{{message.data}}</span></p>
+  <p><span style="background-color:black; color:white; padding:10px; border-radius:5px;">{{message.message}}</span></p>
   </div>
-  <div class="col-sm-10" *ngIf="message.user != loggedUser.name">
-    <p style="margin-bottom:2px;">{{message.user}}</p>
-    <p><span style="background-color:blue; color:white; padding:10px; border-radius:5px;">{{message.data}}</span></p>
+  <div class="col-sm-10" *ngIf="message.email != authUserEmail">
+    <p style="margin-bottom:2px;">{{message.name}}</p>
+    <p><span style="background-color:blue; color:white; padding:10px; border-radius:5px;">{{message.message}}</span></p>
     </div>
 </div>
 <form [formGroup]="chatForm" (ngSubmit)="send()" style="position:fixed; width:40%; bottom:10px; right: 40px;">

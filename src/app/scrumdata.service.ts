@@ -16,6 +16,7 @@ export class ScrumdataService {
   scrumProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojects/';
   updateProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumgoals/';
   updateRoleUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojectroles/';
+  messagesUrl = "https://promise-scrum.herokuapp.com/message";
   myWebSocket = webSocket({
     url : 'wss://7e0gtxz63i.execute-api.us-east-2.amazonaws.com/Dev',
     deserializer: ({data}) => data,
@@ -102,6 +103,14 @@ export class ScrumdataService {
 
   login(user): Observable<any> {
     return this.http.post(this.loginApiUrl, { username: user.email, password: user.password, project: user.projectName}, this.httpOptions);
+  }
+
+  getAllMessages(){
+    return this.http.get(this.messagesUrl, this.httpOptions);
+  }
+
+  sendToDb(user, email, message){
+    return this.http.post(this.messagesUrl, {user: user, email: email, message: message}, this.httpOptions);
   }
 
   logout(): boolean {

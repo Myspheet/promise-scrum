@@ -22,9 +22,11 @@ export class LoginComponent implements OnInit {
       password: [null, Validators.required],
       projectName: [null, Validators.required],
     });
+    
   }
 
   ngOnInit() {
+    
   }
 
   get formControls() { return this.loginForm.controls; }
