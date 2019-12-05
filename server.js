@@ -36,18 +36,25 @@ let con = mysql.createPool({
 
 let mySql = `CREATE TABLE IF NOT EXISTS chat ( id INT(10) NOT NULL AUTO_INCREMENT , name VARCHAR(50) NOT NULL , email VARCHAR(50) NOT NULL , message TEXT NOT NULL , time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (id))`;
 
-con.query(mySql, (err, result) => {
-  if(err) throw err ;
+con.getConnection((err, conn) => {
+  conn.query(mySql, (err, rows) =>{
+    if(err) throw err ;
+  })
+
+  conn.release();
 });
 
 
 app.get("/message", (req, res) => {
     const sql = `SELECT * FROM chat`;
-    con.query(sql,  (err, result) => {
-      if (err) throw err;
-      res.send(result);
-
-  }); 
+    con.getConnection((err, conn) => {
+      conn.query(sql, (err, result) =>{
+        if(err) throw err ;
+        res.send(result);
+      })
+    
+      conn.release();
+    });
 })
 
 app.get('/*', function(req,res){
@@ -57,10 +64,13 @@ app.get('/*', function(req,res){
 app.post("/message", (req, res) => {
   
     const sql = `INSERT INTO chat (name, email, message) VALUES("${req.body.user}", "${req.body.email}", "${req.body.message}")`;
-    con.query(sql,  (err, result) => {
-      if (err) throw err;
-      res.send({success:"Inserted"});
-      
+    con.getConnection((err, conn) => {
+      conn.query(sql, (err, result) =>{
+        if(err) throw err ;
+        res.send(result);
+      })
+    
+      conn.release();
     });
 })
 
