@@ -17,6 +17,7 @@ export class ScrumdataService {
   updateProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumgoals/';
   updateRoleUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojectroles/';
   messagesUrl = "https://promise-scrum.herokuapp.com/message";
+  //messagesUrl = "http://localhost:3000/message"
   myWebSocket = webSocket({
     url : 'wss://7e0gtxz63i.execute-api.us-east-2.amazonaws.com/Dev',
     deserializer: ({data}) => data,
