@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 //   database: "chat_messages"
 // });
 
-let con = mysql.createConnection({
+let con = mysql.createPool({
   host:"us-cdbr-iron-east-05.cleardb.net",
   user: "b1bc029546ae83",
   password: "23325773",
