@@ -72,6 +72,7 @@ export class ScrumboardComponent implements OnInit {
     this.scrumDataService.sendToDb(this.scrumDataService.getUser().name, JSON.parse(localStorage.getItem('AuthUser')).email, this.chatForm.controls.chat.value ).subscribe( data => {
       console.log(data);      
     });
+    
     this.scrumDataService.myWebSocket.next({action:"sendmessage", data: {name:`${this.scrumDataService.getUser().name}`, email:`${JSON.parse(localStorage.getItem('AuthUser')).email}`, message:`${this.chatForm.controls.chat.value}`}})
     this.chatForm.reset();
   }
