@@ -25,11 +25,15 @@ export class ScrumboardComponent implements OnInit {
   gotMessage;
   submit = false;
   chatForm;
+  createGoal;
 
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router:Router, private scrumDataService: ScrumdataService) {
     this.chatForm = this.formBuilder.group({
       chat: [null, Validators.required]
     });
+    this.createGoal = this.formBuilder.group({
+      goal: [null, Validators.required]
+    })
     this.scrumDataService.getAllMessages().subscribe( data => {
         this.gotMessage = data;
         this.gotMessage.forEach( value => {
@@ -146,6 +150,35 @@ export class ScrumboardComponent implements OnInit {
        this.sortGoals(element);
       });
     });
+  }
+
+  addGoal() {
+    this.submit = true;
+    if ((this.submit && this.createGoal.untouched) || this.createGoal.invalid) {
+      this.submit = false;
+      return;
+    }
+    this.scrumDataService.createGoal(this.projectId, this.createGoal.controls.goal.value).subscribe(
+      data => {
+        console.log(data);
+        this.getProjectGoals();
+        this.createGoal.reset();
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  createSprint() {
+    this.scrumDataService.createSprint(this.projectId).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   getProjectGoals() {

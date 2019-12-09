@@ -17,6 +17,7 @@ export class ScrumdataService {
   updateProjectUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumgoals/';
   updateRoleUrl = 'https://liveapi.chatscrum.com/scrum/api/scrumprojectroles/';
   messagesUrl = "https://promise-scrum.herokuapp.com/message";
+  startSprint = "https://liveapi.chatscrum.com/scrum/api/scrumsprint/";
   //messagesUrl = "http://localhost:3000/message"
   myWebSocket = webSocket({
     url : 'wss://7e0gtxz63i.execute-api.us-east-2.amazonaws.com/Dev',
@@ -75,6 +76,15 @@ export class ScrumdataService {
    return this.myChat;
   }
 
+  createSprint(project_id){
+    this.token = this.getUser().token;
+    this.encode = JSON.parse(localStorage.getItem('AuthUser'));
+    this.encode = btoa(`${this.encode.email}:${this.encode.password}`);
+    return this.http.post(this.startSprint + '?' + 'goal_project_id=' + project_id,{project_id: project_id}, {headers: new HttpHeaders() 
+      .set('Authorization', `Basic ${this.encode}==`).append('Content-Type','application/json')
+      });
+  }
+
   loggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
@@ -97,6 +107,15 @@ export class ScrumdataService {
       .set('Authorization', `Basic ${this.encode}==`)
       });
   }
+
+  createGoal(project_id, goal): Observable<any> {
+    this.token = this.getUser().token;
+    this.encode = JSON.parse(localStorage.getItem('AuthUser'));
+   this.encode = btoa(`${this.encode.email}:${this.encode.password}`);
+   return this.http.post(this.updateProjectUrl,{project_id: project_id, user: 'm' + this.getUser().role_id, name: goal}, {headers: new HttpHeaders() 
+     .set('Authorization', `Basic ${this.encode}==`)
+     });
+ }
 
   createProject(project): Observable<any> {
     return this.http.post(this.signupApiUrl, {email: project.email, full_name: project.fullname, usertype:'Owner', projname: project.projectName}, this.httpOptions);
